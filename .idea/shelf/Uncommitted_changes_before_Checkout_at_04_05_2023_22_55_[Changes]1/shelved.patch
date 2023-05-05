@@ -1,0 +1,195 @@
+Index: templates/prueba.html
+===================================================================
+diff --git a/templates/prueba.html b/templates/prueba.html
+new file mode 100644
+--- /dev/null	
++++ b/templates/prueba.html	
+@@ -0,0 +1,10 @@
++<!DOCTYPE html>
++<html lang="en">
++<head>
++    <meta charset="UTF-8">
++    <title>Title</title>
++</head>
++<body>
++
++</body>
++</html>
+\ No newline at end of file
+Index: .idea/SpotyFranz.iml
+===================================================================
+diff --git a/.idea/SpotyFranz.iml b/.idea/SpotyFranz.iml
+new file mode 100644
+--- /dev/null	
++++ b/.idea/SpotyFranz.iml	
+@@ -0,0 +1,8 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<module type="PYTHON_MODULE" version="4">
++  <component name="NewModuleRootManager">
++    <content url="file://$MODULE_DIR$" />
++    <orderEntry type="inheritedJdk" />
++    <orderEntry type="sourceFolder" forTests="false" />
++  </component>
++</module>
+\ No newline at end of file
+Index: .idea/modules.xml
+===================================================================
+diff --git a/.idea/modules.xml b/.idea/modules.xml
+new file mode 100644
+--- /dev/null	
++++ b/.idea/modules.xml	
+@@ -0,0 +1,8 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="ProjectModuleManager">
++    <modules>
++      <module fileurl="file://$PROJECT_DIR$/.idea/SpotyFranz.iml" filepath="$PROJECT_DIR$/.idea/SpotyFranz.iml" />
++    </modules>
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/misc.xml
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+new file mode 100644
+--- /dev/null	
++++ b/.idea/misc.xml	
+@@ -0,0 +1,7 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.9" project-jdk-type="Python SDK" />
++  <component name="PyCharmProfessionalAdvertiser">
++    <option name="shown" value="true" />
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/inspectionProfiles/profiles_settings.xml
+===================================================================
+diff --git a/.idea/inspectionProfiles/profiles_settings.xml b/.idea/inspectionProfiles/profiles_settings.xml
+new file mode 100644
+--- /dev/null	
++++ b/.idea/inspectionProfiles/profiles_settings.xml	
+@@ -0,0 +1,6 @@
++<component name="InspectionProjectProfileManager">
++  <settings>
++    <option name="USE_PROJECT_PROFILE" value="false" />
++    <version value="1.0" />
++  </settings>
++</component>
+\ No newline at end of file
+Index: .idea/vcs.xml
+===================================================================
+diff --git a/.idea/vcs.xml b/.idea/vcs.xml
+new file mode 100644
+--- /dev/null	
++++ b/.idea/vcs.xml	
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="VcsDirectoryMappings">
++    <mapping directory="" vcs="Git" />
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/.gitignore
+===================================================================
+diff --git a/.idea/.gitignore b/.idea/.gitignore
+new file mode 100644
+--- /dev/null	
++++ b/.idea/.gitignore	
+@@ -0,0 +1,3 @@
++# Default ignored files
++/shelf/
++/workspace.xml
+Index: app.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app.py b/app.py
+new file mode 100644
+--- /dev/null	
++++ b/app.py	
+@@ -0,0 +1,39 @@
++from flask import Flask, render_template, request
++
++
++class Cancion:
++    def __init__(self, titulo, categoria, idioma):
++        self.titulo = titulo
++        self.categoria = categoria
++        self.idioma = idioma
++
++
++app = Flask(__name__)
++
++cancion1 = Cancion('La guitarra', 'Pop', 'Castellano')
++cancion2 = Cancion('Para no verte más', 'Pop', 'Castellano')
++cancion3 = Cancion('Balada para un gordo', 'Balada', 'Castellano')
++lista = [cancion1, cancion2, cancion3]
++
++
++@app.route('/')
++def index():
++    return render_template('listar.html', titulo='Canciones', musicas=lista)
++
++
++@app.route('/nuevoregistro')
++def nuevoregistro():
++    return render_template('nuevoRegistro.html', titulo='Nueva Canción')
++
++
++@app.route('/crear', methods=['POST', ])
++def crear():
++    titulo = request.form['titulo']
++    categoria = request.form['categoria']
++    idioma = request.form['idioma']
++    cancion = Cancion(titulo, categoria, idioma)
++    lista.append(cancion)
++    return render_template('listar.html', titulo='Canciones', musicas=lista)
++
++
++app.run(host="0.0.0.0", port=5000)
+Index: templates/nuevoRegistro.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/templates/nuevoRegistro.html b/templates/nuevoRegistro.html
+new file mode 100644
+--- /dev/null	
++++ b/templates/nuevoRegistro.html	
+@@ -0,0 +1,32 @@
++<!DOCTYPE html>
++<html>
++<head>
++    <meta charset="utf-8">
++    <meta name="viewport" content="width=device-width, initial-scale=1">
++    <title>Discoteca</title>
++</head>
++<body>
++<div class="container">
++    <div class="page-header">
++        <h1>{{ titulo }}</h1>
++    </div>
++    <form action="/crear" method="post">
++        <fieldset>
++            <div class="form-group">
++                <label for="titulo">Titulo</label>
++                <input type="text" id="titulo" name="titulo" class="form-control">
++            </div>
++            <div class="form-group">
++                <label for="categoria">Categoria</label>
++                <input type="text" id="categoria" name="categoria" class="form-control">
++            </div>
++            <div class="form-group">
++                <label for="idioma">Idioma</label>
++                <input type="text" id="idioma" name="idioma" class="form-control">
++            </div>
++            <button type="submit" class="btn btn-primary btn-salvar">Grabar</button>
++        </fieldset>
++    </form>
++</div>
++</body>
++</html>
+\ No newline at end of file
