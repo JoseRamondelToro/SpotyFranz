@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, url_for, redirect
 
 
 class Cancion:
@@ -33,7 +33,7 @@ def crear():
     idioma = request.form['idioma']
     cancion = Cancion(titulo, categoria, idioma)
     lista.append(cancion)
-    return render_template('listar.html', titulo='Canciones', musicas=lista)
+    return redirect('/')
 
 
 app.run(host="0.0.0.0", port=5000)
