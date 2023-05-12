@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, url_for, redirect
+from flask import Flask, render_template, request, url_for, redirect, session, flash
 
 
 class Cancion:
@@ -14,6 +14,7 @@ cancion3 = Cancion('Balada para un gordo', 'Balada', 'Castellano')
 lista = [cancion1, cancion2, cancion3]
 
 app = Flask(__name__)
+app.secret_key = 'cochabamba'
 
 
 @app.route('/')
@@ -23,7 +24,12 @@ def index():
 
 @app.route('/nuevoregistro')
 def nuevoregistro():
-    return render_template('nuevoRegistro.html', titulo='Nueva Canción')
+    if session['usuario_logueado'] == None:
+        flash('Usuario no conectado.')
+        return redirect('/login')
+    else:
+        flash('Usuario conectado.')
+        return render_template('nuevoRegistro.html', titulo='Nueva Canción')
 
 
 @app.route('/crear', methods=['POST', ])
@@ -33,6 +39,29 @@ def crear():
     idioma = request.form['idioma']
     cancion = Cancion(titulo, categoria, idioma)
     lista.append(cancion)
+    return redirect('/')
+
+
+@app.route('/login')
+def login():
+    return render_template('login.html')
+
+
+@app.route('/autenticar', methods=['POST', ])
+def autenticar():
+    if 'patitofeo' == request.form['clave']:
+        session['usuario_logueado'] = request.form['usuario']
+        flash(session['usuario_logueado'] + '¡conectado con éxito!')
+        return redirect('/')
+    else:
+        flash('Usuario no conectado.')
+        return redirect('/login')
+
+
+@app.route('/logout')
+def logout():
+    session['usuario_logueado'] = None
+    flash('¡Logout efectuado exitosamente!')
     return redirect('/')
 
 
