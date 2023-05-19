@@ -26,7 +26,7 @@ def index():
 def nuevoregistro():
     if session['usuario_logueado'] == None:
         flash('Usuario no conectado.')
-        return redirect('/login')
+        return redirect('/login?proxima=nuevoregistro')
     else:
         flash('Usuario conectado.')
         return render_template('nuevoRegistro.html', titulo='Nueva Canción')
@@ -44,7 +44,8 @@ def crear():
 
 @app.route('/login')
 def login():
-    return render_template('login.html')
+    proxima=request.args.get('proxima')
+    return render_template('login.html',proxima=proxima)
 
 
 @app.route('/autenticar', methods=['POST', ])
@@ -52,7 +53,8 @@ def autenticar():
     if 'patitofeo' == request.form['clave']:
         session['usuario_logueado'] = request.form['usuario']
         flash(session['usuario_logueado'] + '¡conectado con éxito!')
-        return redirect('/')
+        proxima_pagina=request.form['proxima']
+        return redirect('/{}'.format(proxima_pagina))
     else:
         flash('Usuario no conectado.')
         return redirect('/login')
